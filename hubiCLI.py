@@ -128,30 +128,30 @@ class UnknownLength: pass
 class CustProgressBar(ProgressBar):
     
     def updateBuffer(self, i, arr, msg, lock):
-   	
-   	global stdscr
-   	
-   	now = time.time()
+        
+        global stdscr
+        
+        now = time.time()
         self.seconds_elapsed = now - self.start_time
         self.next_update = self.currval + self.update_interval
-   	
-   	with lock:
-   	   arr[i] = msg
+        
+        with lock:
+           arr[i] = msg
            
            stdscr.clear()
            
-   	   j = 0
+           j = 0
            for dlmsg in arr:
-	      if dlmsg != '':
+              if dlmsg != '':
                  stdscr.addstr(j, 0, dlmsg)
-   	         j += 1
-   	   
+                 j += 1
+          
            stdscr.refresh()
-   	   
+  
            self.last_update_time = now
         
-   	return
-	
+        return
+
     def update(self, value=None, pid=None, arr=None, lock=None):
         """Updates the ProgressBar to a new value."""
         
@@ -161,7 +161,7 @@ class CustProgressBar(ProgressBar):
                 
                 if value >= self.maxval:
                    self.finish()
-           	else:
+                else:
                    raise ValueError('Value out of range')
 
             self.currval = value
@@ -337,12 +337,12 @@ def listFiles(folder = '/', filesOnly=False):
    
    for f in FILESTODOWN:
       if filesOnly and f['type'] == 'application/directory':
-   	  continue
+         continue
       
       if arguments['--verbose'] == True:
-      	 print ', '.join([f['uri'], f['type'], f['creation'], f['modified'], str(f['size'])])
+         print ', '.join([f['uri'], f['type'], f['creation'], f['modified'], str(f['size'])])
       else:
-   	 print f['uri']
+         print f['uri']
    
    return FILESTODOWN;
 
@@ -361,16 +361,16 @@ def getFilesList(folder = '/'):
    filesList = json.JSONDecoder('latin1').decode(r.text)
    
    if filesList['answer'] and filesList['answer']['status'] and filesList['answer']['status'] == 200:
-		
+
       print "* Get files list OK"
       print ""
-		
+
       global filesCount
       filesCount = filesList['answer']['hubic']['list']['default']['props']['count']
 
       if arguments['--verbose'] == True :
-	 print "Files count : ", filesCount
-	 print ""
+         print "Files count : ", filesCount
+         print ""
    
    else :
       print "* Get files list NOT OK !!!"
@@ -611,9 +611,9 @@ def realDownload(name, pid, arr, lock):
    
    for buf in r.iter_content(1024, True):
        if buf:
-	  realFile.write(buf)
-	  bytes += len(buf)
-	  
+          realFile.write(buf)
+          bytes += len(buf)
+          
           progress.update(dsize, 1024, pbar, pid, arr, lock)
       
    realFile.close()
@@ -625,7 +625,7 @@ def realDownload(name, pid, arr, lock):
       DLTOGO.value -= 1
       
       if DLTOGO.value == 0:
-      	 time.sleep(1)
+         time.sleep(1)
          stdscr.erase()
          curses.echo()
          curses.nocbreak()
@@ -648,7 +648,7 @@ def downloadAll(folder):
    names = []
    
    for f in FILESTODOWN:
-   	   names.append(f['uri'])
+      names.append(f['uri'])
    
    download(names)
    
@@ -674,25 +674,25 @@ def downloadZipped(folder, names):
    folderSize = 0
    
    for name in names:
-	   foundFile = getFile(name)
-	   
-	   if foundFile == None:
-	      print "Skipping file not found : %s" % (name)
-	      continue
-	   
-	   filename = os.path.basename(name)
-	   
-	   fsize = foundFile['size']
-	   thetype = 'image/jpeg'
-	   
-   	   payload = {'action': 'download', 'dlname': encodeURI(folder), 'sub': 'launch', 'name': encodeURI(filename), 'uri': encodeURI(name), 'container': 'default', 'size': fsize, 'type': thetype, 'isFile': 'true', 'key': key}
-	   
+           foundFile = getFile(name)
+           
+           if foundFile == None:
+              print "Skipping file not found : %s" % (name)
+              continue
+           
+           filename = os.path.basename(name)
+           
+           fsize = foundFile['size']
+           thetype = 'image/jpeg'
+           
+           payload = {'action': 'download', 'dlname': encodeURI(folder), 'sub': 'launch', 'name': encodeURI(filename), 'uri': encodeURI(name), 'container': 'default', 'size': fsize, 'type': thetype, 'isFile': 'true', 'key': key}
+           
            r = conn.post("https://app.hubic.me/v2/actions/ajax/hubic-browser.php", data=payload, headers=headers, cookies=cookies)
+           
+           a = json.JSONDecoder('utf8').decode(r.text)
 	   
-	   a = json.JSONDecoder('utf8').decode(r.text)
-	   
-	   if a['answer']['status'] and a['answer']['status'] == 200:
-	      folderSize += a['answer']['download']['loaded']
+           if a['answer']['status'] and a['answer']['status'] == 200:
+              folderSize += a['answer']['download']['loaded']
    
    zipName = os.path.basename(folder) + ".zip"
    
@@ -713,9 +713,9 @@ def downloadZipped(folder, names):
    
    for buf in r.iter_content(1024, True):
        if buf:
-	  realFile.write(buf)
-	  bytes += len(buf)
-	  pbar.update(bytes)
+          realFile.write(buf)
+          bytes += len(buf)
+          pbar.update(bytes)
           
           if bytes >= dsize:
              pbar.finish()
@@ -926,7 +926,7 @@ def walkDict( aDict, visitor, filename, path=() ):
     global fileFound
     
     if fileFound == True:
-	return;
+        return;
     
     for  k in aDict:
         if k == 'props':
