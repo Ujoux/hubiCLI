@@ -71,6 +71,7 @@ import urllib
 import urllib2
 import curses
 import time
+import codecs
 
 # you will probably have to install those modules (docopt, requests, progressbar)
 
@@ -78,6 +79,10 @@ from docopt import docopt
 import requests
 import progressbar
 from progressbar import Bar, FileTransferSpeed, Percentage, ProgressBar
+
+# fix unicode printing
+streamWriter = codecs.lookup('utf-8')[-1]
+sys.stdout = streamWriter(sys.stdout)
 
 __author__ = "Ujoux"
 __copyright__ = "Copyleft"
