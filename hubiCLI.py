@@ -214,7 +214,7 @@ class Task(object):
     def __str__(self):
         return 'ARC'
     def run(self):
-        print 'IN'
+        print("IN")
 
 class TaskUpload(object):
     def __init__(self, folder, a, pid):
@@ -231,13 +231,13 @@ class TaskUpload(object):
     def __str__(self):
         return 'ARC'
     def run(self):
-        print 'IN'
+        print("IN")
 
 # Session() to keep authentication cookies
 sess = requests.Session()
 
-print "Starting hubiCLI..."
-print ""
+print("Starting hubiCLI...")
+print
 
 def get_cookie_by_name(cj, name):
     return [cookie for cookie in cj if cookie.name == name][0]
@@ -247,7 +247,7 @@ def login():
    global HUBICID
    
    if username == '' or password == '':
-      print "No username or password specified"
+      print("No username or password specified")
       sys.exit(0)
    
    headers = {'User-Agent': userAgent, 'Origin': 'https://app.hubic.me'}
@@ -274,13 +274,13 @@ def login():
       
       message = message.replace('+', ' ')
       
-      print "Login failed -> %s (%d)" % (message, statusCode)
+      print("Login failed -> %s (%d)" % (message, statusCode))
       
       sys.exit(0)
    
    if arguments['--verbose'] == True :
-      print "* Successfuly logged into hubiC"
-      print ""
+      print("* Successfuly logged into hubiC")
+      print
    
    return;
 
@@ -293,8 +293,8 @@ def getSettings():
    resp = r.json()
    
    if resp['answer'] and resp['answer']['status'] and resp['answer']['status'] == 200:
-      print "* Successfuly retrieved settings"
-      print ""
+      print("* Successfuly retrieved settings")
+      print
       
       global email
       email = resp['answer']['settings']['hubic']['email']
@@ -317,16 +317,16 @@ def getSettings():
       maxFileSize = int(resp['answer']['settings']['settings']['MAX_FILE_SIZE'])
       
       if arguments['--verbose'] == True :
-         print "Email : %s" % (email)
-         print "Account type : %s" % (accountType)
-         print "Used : %s out of %s (%d%%)" % (sizeof_fmt(used), sizeof_fmt(quota), (used * 100) / quota)
-         print "Version : %s" % (version)
-         print "Max file size : %s" % (sizeof_fmt(maxFileSize))
+         print("Email : %s" % (email))
+         print("Account type : %s" % (accountType))
+         print("Used : %s out of %s (%d%%)" % (sizeof_fmt(used), sizeof_fmt(quota), (used * 100) / quota))
+         print("Version : %s" % (version))
+         print("Max file size : %s" % (sizeof_fmt(maxFileSize)))
       
-      print ""
+      print
    else :
-      print "* Retrieving settings failed !"
-      print ""
+      print("* Retrieving settings failed !")
+      print
    
    return;
 
@@ -345,9 +345,9 @@ def listFiles(folder = '/', filesOnly=False):
          continue
       
       if arguments['--verbose'] == True:
-         print ', '.join([f['uri'], f['type'], f['creation'], f['modified'], str(f['size'])])
+         print(', '.join([f['uri'], f['type'], f['creation'], f['modified'], str(f['size'])]))
       else:
-         print f['uri']
+         print(f['uri'])
    
    return FILESTODOWN;
 
@@ -359,27 +359,27 @@ def getFilesList(folder = '/'):
    r = sess.post("https://app.hubic.me/v2/actions/ajax/hubic-browser.php", data=payload, headers=headers)
    
    if r.status_code != 200:
-      print "* Get files list NOT OK !!!"
-      print ""
+      print("* Get files list NOT OK !!!")
+      print
       return
    
    filesList = json.JSONDecoder('latin1').decode(r.text)
    
    if filesList['answer'] and filesList['answer']['status'] and filesList['answer']['status'] == 200:
 
-      print "* Get files list OK"
-      print ""
+      print("* Get files list OK")
+      print
 
       global filesCount
       filesCount = filesList['answer']['hubic']['list']['default']['props']['count']
 
       if arguments['--verbose'] == True :
-         print "Files count : ", filesCount
-         print ""
+         print("Files count : %d" % filesCount)
+         print
    
    else :
-      print "* Get files list NOT OK !!!"
-      print ""
+      print("* Get files list NOT OK !!!")
+      print
       return;
    
    return;
@@ -587,7 +587,7 @@ def realDownload(name, pid, arr, lock):
    
    #if foundFile is None or foundFile['size'] is UnknownLength:
       #print "* Download of %s failed ! -> file not found" % filename
-      #print ""
+      #print
       #return
    
    fsize = foundFile['size']
@@ -682,7 +682,7 @@ def downloadZipped(folder, names):
            foundFile = getFile(name)
            
            if foundFile == None:
-              print "Skipping file not found : %s" % (name)
+              print("Skipping file not found : %s" % (name))
               continue
            
            filename = os.path.basename(name)
@@ -776,7 +776,7 @@ def move(src, dest, name):
    oldFile = getFile(oldFileURI)
    
    if oldFile == None:
-      print "File not found : %s" % (oldFileURI)
+      print("File not found : %s" % (oldFileURI))
       return
    
    mime = oldFile['type']
@@ -788,9 +788,9 @@ def move(src, dest, name):
    resp = r.json()
    
    if resp['answer'] and resp['answer']['status'] and resp['answer']['status'] == 201:
-      print "* Moved %s to %s OK" % (oldFileURI, newFileURI)
+      print("* Moved %s to %s OK" % (oldFileURI, newFileURI))
    else :
-      print "* Move of %s to %s failed !" % (oldFileURI, newFileURI)
+      print("* Move of %s to %s failed !" % (oldFileURI, newFileURI))
    
    return;
 
@@ -801,7 +801,7 @@ def rename(src, old, new):
    oldFile = getFile(oldFileURI)
    
    if oldFile == None:
-      print "File not found : %s" % (oldFileURI)
+      print("File not found : %s" % (oldFileURI))
       return
    
    headers = {'User-Agent': userAgent, 'Origin': 'https://app.hubic.me'}
@@ -811,9 +811,9 @@ def rename(src, old, new):
    resp = r.json()
    
    if resp['answer'] and resp['answer']['status'] and resp['answer']['status'] == 201:
-      print "* Rename of %s to %s OK" % (oldFileURI, newFileURI)
+      print("* Rename of %s to %s OK" % (oldFileURI, newFileURI))
    else :
-      print "* Rename of %s to %s failed !" % (oldFileURI, newFileURI)
+      print("* Rename of %s to %s failed !" % (oldFileURI, newFileURI))
    
    return;
 
@@ -829,9 +829,9 @@ def createFolder(folder, name, quiet=False):
    
    if quiet == False:
       if resp['answer'] and resp['answer']['status'] and resp['answer']['status'] == 201:
-         print "* Created folder %s OK" % folderURI
+         print("* Created folder %s OK" % folderURI)
       else :
-         print "* Creation of %s failed !" % folderURI
+         print("* Creation of %s failed !" % folderURI)
    
    return;
 
@@ -841,7 +841,7 @@ def delete(folder, name):
    theFile = getFile(fileURI)
    
    if theFile == None:
-      print "File not found : %s" % (fileURI)
+      print("File not found : %s" % (fileURI))
       return
    
    mime = theFile['type']
@@ -855,9 +855,9 @@ def delete(folder, name):
    resp = r.json()
    
    if resp['answer'] and resp['answer']['status'] and resp['answer']['status'] == 204:
-      print "* Deleted %s OK" % fileURI
+      print("* Deleted %s OK" % fileURI)
    else :
-      print "* Deletion of %s failed !" % fileURI
+      print("* Deletion of %s failed !" % fileURI)
    
    return;
 
@@ -867,7 +867,7 @@ def publish(folder, name, duration = 10, message = ''):
    theFile = getFile(fileURI)
    
    if theFile == None:
-      print "File not found : %s" % (fileURI)
+      print("File not found : %s" % (fileURI))
       return
    
    mime = theFile['type']
@@ -888,12 +888,12 @@ def publish(folder, name, duration = 10, message = ''):
       creationF = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(creation)))
       expireF = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(int(expire)))
       
-      print "* Publishing of %s OK" % fileURI
+      print("* Publishing of %s OK" % fileURI)
       
-      print "Created on %s, expires on %s" % (creationF, expireF)
-      print "URL : %s" % (url)
+      print("Created on %s, expires on %s" % (creationF, expireF))
+      print("URL : %s" % (url))
    else :
-      print "* Publishing of %s failed ! (is it already published ?)" % fileURI
+      print("* Publishing of %s failed ! (is it already published ?)" % fileURI)
    
    return;
 
@@ -903,7 +903,7 @@ def unpublish(folder, name):
    theFile = getFile(fileURI)
    
    if theFile == None:
-      print "File not found : %s" % (fileURI)
+      print("File not found : %s" % (fileURI))
       return
    
    mime = theFile['type']
@@ -915,15 +915,15 @@ def unpublish(folder, name):
    r = sess.post("https://app.hubic.me/v2/actions/ajax/hubic-browser.php", data=payload, headers=headers)
       
    if r.status_code != 200:
-      print "* Unpublish of %s failed !" % fileURI
+      print("* Unpublish of %s failed !" % fileURI)
       return
    
    resp = r.json()
    
    if resp['answer'] and resp['answer']['status'] and resp['answer']['status'] == 200:
-      print "* Unpublish of %s OK" % fileURI
+      print("* Unpublish of %s OK" % fileURI)
    else :
-      print "* Unpublish of %s failed ! (is it really published ?)" % fileURI
+      print("* Unpublish of %s failed ! (is it really published ?)" % fileURI)
    
    return;
 
@@ -1017,11 +1017,11 @@ def checkDownload(folder, name):
    resp = r.json()
    
    if resp['answer']['status'] == 200:
-      print "* Download check of %s OK" % (filename)
-      print ""
+      print("* Download check of %s OK" % (filename))
+      print
    else :
-      print "* Download check of %s NOT OK !!!" % (filename)
-      print ""
+      print("* Download check of %s NOT OK !!!" % (filename))
+      print
    
    return
 
@@ -1030,9 +1030,9 @@ def logout():
    r = sess.post("https://app.hubic.me/v2/actions/ajax/logoff.php", data=payload, headers=headers)
    
    print
-   print "* Successfuly logged out"
+   print("* Successfuly logged out")
    print
-   print "* Stopping hubiCLI..."
+   print("* Stopping hubiCLI...")
    print
    
    return
