@@ -412,7 +412,7 @@ def uploadBunch(folder, names):
    
    pid=0
    for name in names:
-      tasks.put(TaskUpload(os.path.join(folder, os.path.dirname(name)), os.path.basename(name), pid))
+      tasks.put(TaskUpload(os.path.join(folder, os.path.dirname(name)), name, pid))
       pid += 1
 
    for i in xrange(num_consumers):
@@ -510,7 +510,7 @@ def uploadAll(folderSrc, folderDst):
       
       for filename in filenames:
          FILESTOUP.append(os.path.join(dirpath, filename))
-      
+   
    for d in dirs:
       createFolder(os.path.join(folderDst, os.path.dirname(d)), os.path.basename(d), True)
    
@@ -526,7 +526,8 @@ def realUpload(folder, name, pid, arr, lock):
    global UPTOGO
    global UPTOGO_LOCK
    
-   filename = "%s%s" % (folder, name)
+   inDirFilename = os.path.basename(name)
+   
    in_file = open(name, "r")
    fileData = in_file.read()
    in_file.close()
@@ -546,7 +547,7 @@ def realUpload(folder, name, pid, arr, lock):
 
    pbar = CustProgressBar(widgets=widgets, maxval=fileSize).start()
    
-   path = name
+   path = inDirFilename
    progress = Progress()
    
    stream = file_with_callback(path, 'r', progress.update, pbar, pid, arr, lock)
