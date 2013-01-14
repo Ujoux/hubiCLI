@@ -282,7 +282,7 @@ def login():
 def getSettings():
    global userAgent
    
-   headers = {'User-Agent': userAgent, 'Origin': 'https://app.hubic.me', 'Content-Length': 0}
+   headers = {'User-Agent': userAgent, 'Origin': 'https://app.hubic.me'}
    r = sess.post("https://app.hubic.me/v2/actions/ajax/getSettings.php", headers=headers)
    
    resp = r.json()
