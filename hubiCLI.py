@@ -325,7 +325,7 @@ def getSettings():
    
    return;
 
-def listFiles(folder = '/', filesOnly=True):
+def listFiles(folder = '/', filesOnly=False):
    global FILESTODOWN
    global filesList
    
