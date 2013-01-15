@@ -449,7 +449,7 @@ def upload(folder, names):
    
    pid=0
    for name in names:
-      tasks.put(TaskUpload(folder, name, pid))
+      tasks.put(TaskUpload(os.path.join(folder, os.path.dirname(name)), name, pid))
       pid += 1
 
    for i in xrange(num_consumers):
@@ -547,7 +547,7 @@ def realUpload(folder, name, pid, arr, lock):
 
    pbar = CustProgressBar(widgets=widgets, maxval=fileSize).start()
    
-   path = inDirFilename
+   path = name
    progress = Progress()
    
    stream = file_with_callback(path, 'r', progress.update, pbar, pid, arr, lock)
